@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Interactivo</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            transition: background 0.5s, color 0.5s;
+            flex-direction: column;
+        }
+
+        .menu {
+            margin-bottom: 20px;
+        }
+
+        .menu select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        .catalogo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .imagen {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .botones {
+            display: flex;
+            gap: 20px;
+        }
+
+        .boton {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .boton:hover {
+            background-color: #0D47A1;
+        }
+
+        .estudiantil {
+            background: linear-gradient(to right, #0D47A1, #42A5F5);
+            color: white;
+        }
+
+        .empresarial {
+            background: linear-gradient(to right, #6D4C41, #D7CCC8);
+            color: black;
+        }
+
+    </style>
+</head>
+<body class="estudiantil">
+    
+    <!-- Menú desplegable -->
+    <div class="menu">
+        <label for="seccion">Selecciona la sección:</label>
+        <select id="seccion">
+            <option value="estudiantil">Estudiantil</option>
+            <option value="empresarial">Empresarial</option>
+        </select>
+    </div>
+
+    <!-- Catálogo de imágenes -->
+    <div class="catalogo">
+        <img class="imagen" id="imagenCatalogo" src="https://via.placeholder.com/600/111" alt="Publicidad">
+        <div class="botones">
+            <button class="boton" id="anterior">&#9665; Anterior</button>
+            <button class="boton" id="siguiente">Siguiente &#9655;</button>
+        </div>
+    </div>
+
+    <script>
+        // Rutas de imágenes para cada sección
+        const imagenesEstudiantiles = [
+            "https://via.placeholder.com/600/111",
+            "https://via.placeholder.com/600/222",
+            "https://via.placeholder.com/600/333"
+        ];
+
+        const imagenesEmpresariales = [
+            "https://via.placeholder.com/600/444",
+            "https://via.placeholder.com/600/555",
+            "https://via.placeholder.com/600/666"
+        ];
+
+        let indice = 0; // Para llevar el control de la imagen actual
+        let imagenActual = imagenesEstudiantiles; // Por defecto se muestran imágenes estudiantiles
+
+        // Cambiar la sección cuando el usuario selecciona una opción en el menú
+        $('#seccion').change(function() {
+            let seccion = $(this).val();
+            if (seccion === 'estudiantil') {
+                $('body').removeClass('empresarial').addClass('estudiantil');
+                imagenActual = imagenesEstudiantiles;
+            } else {
+                $('body').removeClass('estudiantil').addClass('empresarial');
+                imagenActual = imagenesEmpresariales;
+            }
+            indice = 0; // Reiniciar el índice
+            $('#imagenCatalogo').attr('src', imagenActual[indice]); // Mostrar la primera imagen
+        });
+
+        // Función para ir a la imagen anterior
+        $('#anterior').click(function() {
+            if (indice > 0) {
+                indice--;
+                $('#imagenCatalogo').attr('src', imagenActual[indice]);
+            }
+        });
+
+        // Función para ir a la imagen siguiente
+        $('#siguiente').click(function() {
+            if (indice < imagenActual.length - 1) {
+                indice++;
+                $('#imagenCatalogo').attr('src', imagenActual[indice]);
+            }
+        });
+    </script>
+
+</body>
+</html>
