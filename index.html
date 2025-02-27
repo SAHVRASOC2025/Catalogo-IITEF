@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Interactivo</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            transition: background 0.5s, color 0.5s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            position: relative;
+        }
+        .menu {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .menu select {
+            padding: 5px;
+            background: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .catalogo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow: hidden;
+        }
+        .imagen {
+            width: 100%;
+            height: auto;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        /* Contenedor para el texto fijo en la parte superior */
+        .texto-imagen {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px;
+            font-size: 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            z-index: 10;
+        }
+        .botones {
+            display: flex;
+            justify-content: space-between;
+            position: absolute;
+            width: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .boton {
+            background: rgba(255, 255, 255, 0.7);
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+        .boton:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+        .estudiantil {
+            background: linear-gradient(to right, #0D47A1, #42A5F5);
+            color: white;
+        }
+        .empresarial {
+            background: linear-gradient(to right, #6D4C41, #D7CCC8);
+            color: black;
+		}
+		.propuestas {
+            background: linear-gradient(to right, #2E7D32, #A5D6A7);
+            color: white;
+        }
+    </style>
+</head>
+<body class="estudiantil">
+    <div class="menu">
+        <label for="seccion">Sección:</label>
+        <select id="seccion">
+            <option value="estudiantil">IITEF EDUCACIÓN</option>
+            <option value="propuestas">IITEF PROPUESTAS N/A</option>
+            <option value="empresarial">MIL CAJAS DE CARTÓN</option>
+        </select>
+    </div>
+    
+    <div class="texto-imagen" id="textoImagen">INSTITUTO DE INNOVACIÓN TECNOLÓGICA DE ESTUDIOS FINANCIEROS</div>
+    
+    <div class="catalogo">
+        <img class="imagen" id="imagenCatalogo" src="portadaE.jpg" alt="Publicidad">
+        
+        <div class="botones">
+            <button class="boton" id="anterior">&#9665;</button>
+            <button class="boton" id="siguiente">&#9655;</button>
+        </div>
+    </div>
+    
+    <script>
+        const imagenesEstudiantiles = [
+            { src: "portadaE.jpg", nombre: "INSTITUTO DE INNOVACIÓN TECNOLÓGICA DE ESTUDIOS FINANCIEROS" },
+			{ src: "nomenclatura.jpg", nombre: "NOMENCLATURA" },
+            { src: "publicidad1.jpg", nombre: "PUVD-001-O-CUAS.png" },
+            { src: "publicidad2.jpg", nombre: "PUVD-002-O-CUAS.png" },
+            { src: "lona1.jpg", nombre: "IUHI-001-OTROS-SAH" },
+            { src: "pegote1.jpg", nombre: "PUVD-01-OTROS-SAH" },
+            { src: "pegote2.jpg", nombre: "PUVD-02-OTROS-SAH" },
+			{ src: "imagen1.jpg", nombre: "DUHD-001-UNAM-PUBLICADA" },
+			{ src: "imagen2.jpg", nombre: "DUHD-002-UNAM-PUBLICADA" },
+			{ src: "imagen3.jpg", nombre: "DUHD-003-UNAM-PUBLICADA" },
+			{ src: "imagen4.jpg", nombre: "DUHD-004-IPN-PUBLICADA" },
+			{ src: "imagen5.jpg", nombre: "DUHD-005-OTRO-PUBLICADA" },
+			{ src: "imagen6.jpg", nombre: "DUHD-006-UNAM-PUBLICADA" },
+			{ src: "imagen7.jpg", nombre: "DUHD-007-OTRO-PUBLICADA" },
+			{ src: "imagen9.jpg", nombre: "DUHD-008-OTRO-PUBLICADA" },
+			{ src: "imagen10.jpg", nombre: "DUHD-009-UNAM-PUBLICADA" },
+			{ src: "imagen11.jpg", nombre: "DUHD-010-UNAM-PUBLICADA" },
+			{ src: "imagen12.jpg", nombre: "DUHD-011-OTRO-PUBLICADA" },
+			{ src: "imagen13.jpg", nombre: "DUHD-012-OTRO-PUBLICADA" },
+			{ src: "imagen14.jpg", nombre: "DUHD-013-UNAM-PUBLICADA" },
+			{ src: "imagen15.jpg", nombre: "DUHD-014-UNAM-PUBLICADA" },
+			{ src: "imagen16.jpg", nombre: "DUHD-014-OTRO-PUBLICADA" }
+        ];
+        
+        const imagenesEmpresariales = [
+            { src: "portadaMCC.jpg", nombre: "MIL CAJAS DE CARTÓN" },
+            { src: "MCC1.jpg", nombre: "DEHD-001-O-CUAS" },
+            { src: "MCC2.jpg", nombre: "DEHD-002-O-CUAS" },
+			{ src: "MCC3.jpg", nombre: "DEHD-003-O-CUAS" },
+			{ src: "MCC4.jpg", nombre: "DEHD-004-O-CUAS" },
+			{ src: "MCC5.jpg", nombre: "DEHD-005-O-CUAS" },
+			{ src: "MCC6.jpg", nombre: "DEHD-006-O-CUAS" }
+        ];
+
+        const imagenesPropuestas = [
+            { src: "propuesta8.jpg", nombre: "IOHI-001-O-OEAJ" },
+            { src: "propuesta1.jpg", nombre: "IUVI-002-O-SAH" },
+			{ src: "propuesta2.jpg", nombre: "IUVI-003-O-VFP" },
+			{ src: "propuesta3.jpg", nombre: "IUVI-004-UNAM-SAH" },
+			{ src: "propuesta4.jpg", nombre: "IUHI-005-O-SAH" },
+			{ src: "propuesta5.jpg", nombre: "IUHI-006-O-OEAJ" },
+			{ src: "propuesta6.jpg", nombre: "IEVI-007-O-CUAS" },
+			{ src: "propuesta7.jpg", nombre: "DEHD-008-O-SAH" },
+			{ src: "propuesta9.jpg", nombre: "IUVI-009-O-LABE" },
+			{ src: "propuesta10.jpg", nombre: "IUHI-010-O-SAH" },
+			{ src: "propuesta11.jpg", nombre: "IUHI-011-O-ESGR-CUAS" },
+			{ src: "propuesta12.jpg", nombre: "IUHI-012-O-ESGR-CUAS" },
+			{ src: "propuesta13.jpg", nombre: "IUHI-013-O-SAH" },
+			{ src: "propuesta14.jpg", nombre: "IUHI-014-O-SAH" },
+			{ src: "propuesta15.jpg", nombre: "IUHI-015-O-SAH" },
+			{ src: "propuesta16.jpg", nombre: "IUHI-016-O-SAH" },
+			{ src: "propuesta17.jpg", nombre: "IUHI-017-O-SAH" },
+			{ src: "propuesta18.jpg", nombre: "IUHI-018-O-CUAS" },
+			{ src: "propuesta19.jpg", nombre: "IUHI-019-O-CUAS" },
+			{ src: "propuesta20.jpg", nombre: "IUHI-020-O-SAH" },
+			{ src: "propuesta21.jpg", nombre: "IUHI-021-O-SAH" },
+			{ src: "propuesta22.jpg", nombre: "IUHI-022-O-SAH" },
+			{ src: "propuesta23.jpg", nombre: "IUHI-023-O-SAH" },
+			{ src: "propuesta24.jpg", nombre: "IUHI-024-O-SAH" },
+			{ src: "propuesta25.jpg", nombre: "IUHI-025-O-ESGR" },
+			{ src: "propuesta26.jpg", nombre: "IUHI-026-O-ESGR" },
+			{ src: "propuesta27.jpg", nombre: "IUHI-027-O-ESGR" },
+			{ src: "propuesta28.jpg", nombre: "IUVI-028-O-ESGR" },
+			{ src: "propuesta29.jpg", nombre: "IUVI-029-O-ESGR" },
+			{ src: "propuesta30.jpg", nombre: "IUVI-030-O-ESGR" },
+			{ src: "propuesta31.jpg", nombre: "IUHI-031-O-ESGR" },
+			{ src: "propuesta32.jpg", nombre: "IUVI-032-O-ESGR" },
+			{ src: "propuesta33.jpg", nombre: "IUVI-033-O-ESGR" },
+			{ src: "propuesta34.jpg", nombre: "IUVI-034-O-ESGR" },
+			{ src: "propuesta35.jpg", nombre: "IUHI-035-O-CUAS" },
+			{ src: "propuesta36.jpg", nombre: "IUHI-036-O-ESGR" },
+			{ src: "propuesta37.jpg", nombre: "IUHI-037-O-ESGR" },
+			{ src: "propuesta38.jpg", nombre: "IUHI-038-O-ESGR" },
+			{ src: "propuesta39.jpg", nombre: "IUHI-039-O-CUAS" },
+			{ src: "propuesta40.jpg", nombre: "IUHI-040-O-CUAS" },
+			{ src: "propuesta41.jpg", nombre: "IUHI-041-O-CUAS" },
+			{ src: "propuesta42.jpg", nombre: "IUHI-042-O-CUAS" },
+			{ src: "propuesta43.jpg", nombre: "IUHI-043-O-ESGR" },
+			{ src: "propuesta44.jpg", nombre: "IUHI-044-O-ESGR" }
+        ];
+        
+        let indice = 0;
+        let imagenActual = imagenesEstudiantiles;
+        
+        $('#seccion').change(function() {
+            let seccion = $(this).val();
+            if (seccion === 'estudiantil') {
+                $('body').removeClass('empresarial propuestas').addClass('estudiantil');
+                imagenActual = imagenesEstudiantiles;
+            } else if (seccion === 'empresarial') {
+                $('body').removeClass('estudiantil propuestas').addClass('empresarial');
+                imagenActual = imagenesEmpresariales;
+            } else {
+                $('body').removeClass('estudiantil empresarial').addClass('propuestas');
+                imagenActual = imagenesPropuestas;
+            }
+            indice = 0;
+            $('#imagenCatalogo').attr('src', imagenActual[indice].src);
+            $('#textoImagen').text(imagenActual[indice].nombre);
+        });
+        
+        $('#anterior').click(function() {
+            if (indice > 0) {
+                indice--;
+                $('#imagenCatalogo').attr('src', imagenActual[indice].src);
+                $('#textoImagen').text(imagenActual[indice].nombre);
+            }
+        });
+        
+        $('#siguiente').click(function() {
+            if (indice < imagenActual.length - 1) {
+                indice++;
+                $('#imagenCatalogo').attr('src', imagenActual[indice].src);
+                $('#textoImagen').text(imagenActual[indice].nombre);
+            }
+        });
+    </script>
+</body>
+</html>
